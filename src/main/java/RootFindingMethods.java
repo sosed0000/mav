@@ -105,9 +105,8 @@ public class RootFindingMethods extends ApplicationFrame {
     }
 
     public static void main(String[] args) {
-        int steps = 100; // Кількість кроків
+        int steps = 100;
 
-        // Створення даних для серії
         XYSeries series = new XYSeries("Функція");
         double stepSize = (upperBound - lowerBound) / steps;
         for (int i = 0; i <= steps; i++) {
@@ -115,24 +114,45 @@ public class RootFindingMethods extends ApplicationFrame {
             series.add(x, function(x));
         }
 
-        // Створення вікна з графіком
         RootFindingMethods chart = new RootFindingMethods("Графік функції", series);
         chart.pack();
         RefineryUtilities.centerFrameOnScreen(chart);
         chart.setVisible(true);
 
-        double epsilon = 1e-4; // Точність
-        double initialGuess = 1.0; // Початкове наближення
+        double epsilon = 1e-4;
 
-            // Викликаємо методи пошуку кореня, визначені у вашому класі:
+        double[] initialGuesses = {-1.5, -0.5, 0.5, 1.5};
+
+        double maxRoot = -Double.MAX_VALUE;
+
+        for (double initialGuess : initialGuesses) {
+            System.out.println("Початкова точка: " + initialGuess);
+
             double rootNewton = newtonMethod(initialGuess, epsilon);
-            System.out.println("Корінь, знайдений за допомогою методу Ньютона: " + rootNewton);
+            System.out.println("\nМетод Ньютона");
+            System.out.println("Корінь: " + rootNewton + ", знайдений на інтервалі: [" + (initialGuess - stepSize/2) + ", " + (initialGuess + stepSize/2) + "]");
+            if (rootNewton > maxRoot) {
+                maxRoot = rootNewton;
+            }
 
             double rootModifiedNewton = modifiedNewtonMethod(initialGuess, epsilon);
-            System.out.println("Корінь, знайдений за допомогою модифікованого методу Ньютона: " + rootModifiedNewton);
+            System.out.println("\nМодифікований метод Ньютона");
+            System.out.println("Корінь: " + rootModifiedNewton + ", знайдений на інтервалі: [" + (initialGuess - stepSize/2) + ", " + (initialGuess + stepSize/2) + "]");
+            if (rootModifiedNewton > maxRoot) {
+                maxRoot = rootModifiedNewton;
+            }
 
             double rootSimpleIteration = simpleIterationMethod(initialGuess, epsilon);
-            System.out.println("Корінь, знайдений за допомогою методу простих ітерацій: " + rootSimpleIteration);
-//        }
+            System.out.println("\nМетод простих ітерацій");
+            System.out.println("Корінь: " + rootSimpleIteration + ", знайдений на інтервалі: [" + (initialGuess - stepSize/2) + ", " + (initialGuess + stepSize/2) + "]");
+            if (rootSimpleIteration > maxRoot) {
+                maxRoot = rootSimpleIteration;
+            }
+
+            System.out.println(); // Додатковий пропуск рядка для відокремлення результатів різних методів
+        }
+
+        System.out.println("Найбільший корінь: " + maxRoot);
     }
+
 }
