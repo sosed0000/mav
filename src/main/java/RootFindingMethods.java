@@ -105,29 +105,37 @@ public class RootFindingMethods extends ApplicationFrame {
     }
 
     public static void main(String[] args) {
-        int steps = 100;
+        int steps = 100;  // Кількість кроків для розділення інтервалу.
 
-        XYSeries series = new XYSeries("Функція");
+        // Створення об'єкту для зберігання значень функції і їх подальшого виводу на графіку.
+        XYSeries series = new XYSeries("Функція: f(x) = x^4 + 4x − 2");
+
+        // Обчислення розмірів кроків для поділу інтервалу на steps частин.
         double stepSize = (upperBound - lowerBound) / steps;
+
+        // Цикл для обчислення значень функції на різних точках і зберігання їх у змінну series.
         for (int i = 0; i <= steps; i++) {
             double x = lowerBound + i * stepSize;
             series.add(x, function(x));
         }
 
+        // Створення графіку та відображення його на екрані.
         RootFindingMethods chart = new RootFindingMethods("Графік функції", series);
         chart.pack();
         RefineryUtilities.centerFrameOnScreen(chart);
         chart.setVisible(true);
 
-        double epsilon = 1e-4;
+        double epsilon = 1e-4;  // Точність обчислень.
 
-        double[] initialGuesses = {-1.5, -0.5, 0.5, 1.5};
+        double[] initialGuesses = {-1.5, -0.5, 0.5, 1.5};  // Початкові припущення для коренів.
 
-        double maxRoot = -Double.MAX_VALUE;
+        double maxRoot = -Double.MAX_VALUE;  // Змінна для зберігання максимального кореня.
 
+        // Цикл для обчислення коренів за допомогою трьох різних методів для кожного початкового припущення.
         for (double initialGuess : initialGuesses) {
             System.out.println("Початкова точка: " + initialGuess);
 
+            // Обчислення кореня за допомогою Методу Ньютона та вивід результатів.
             double rootNewton = newtonMethod(initialGuess, epsilon);
             System.out.println("\nМетод Ньютона");
             System.out.println("Корінь: " + rootNewton + ", знайдений на інтервалі: [" + (initialGuess - stepSize/2) + ", " + (initialGuess + stepSize/2) + "]");
@@ -135,6 +143,7 @@ public class RootFindingMethods extends ApplicationFrame {
                 maxRoot = rootNewton;
             }
 
+            // Обчислення кореня за допомогою Модифікованого методу Ньютона та вивід результатів.
             double rootModifiedNewton = modifiedNewtonMethod(initialGuess, epsilon);
             System.out.println("\nМодифікований метод Ньютона");
             System.out.println("Корінь: " + rootModifiedNewton + ", знайдений на інтервалі: [" + (initialGuess - stepSize/2) + ", " + (initialGuess + stepSize/2) + "]");
@@ -142,6 +151,7 @@ public class RootFindingMethods extends ApplicationFrame {
                 maxRoot = rootModifiedNewton;
             }
 
+            // Обчислення кореня за допомогою Методу простих ітерацій та вивід результатів.
             double rootSimpleIteration = simpleIterationMethod(initialGuess, epsilon);
             System.out.println("\nМетод простих ітерацій");
             System.out.println("Корінь: " + rootSimpleIteration + ", знайдений на інтервалі: [" + (initialGuess - stepSize/2) + ", " + (initialGuess + stepSize/2) + "]");
@@ -149,9 +159,10 @@ public class RootFindingMethods extends ApplicationFrame {
                 maxRoot = rootSimpleIteration;
             }
 
-            System.out.println(); // Додатковий пропуск рядка для відокремлення результатів різних методів
+            System.out.println();
         }
 
+        // Виведення максимального кореня на екран.
         System.out.println("Найбільший корінь: " + maxRoot);
     }
 
